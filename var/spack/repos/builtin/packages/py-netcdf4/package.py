@@ -60,7 +60,8 @@ class PyNetcdf4(PythonPackage):
         sha256="71eefe1d3065ad050fb72eb61d916ae1374a3fafd96ddaee6499cda952d992c4",
         when="@1.6: %gcc@14:",
     )
-
+    #  on polaris, cray's netcdf symbols aren't quite what py-netcdf4 expects
+    patch("remove-static-decl.patch")
     def url_for_version(self, version):
         url = "https://files.pythonhosted.org/packages/source/n/netCDF4/{}-{}.tar.gz"
         if version >= Version("1.7"):
@@ -89,3 +90,6 @@ class PyNetcdf4(PythonPackage):
         env.set("NETCDF4_DIR", self.spec["netcdf-c"].prefix)
         env.set("NETCDF4_INCDIR", self.spec["netcdf-c"].prefix.include)
         env.set("NETCDF4_LIBDIR", self.spec["netcdf-c"].prefix.lib)
+        # need to build with the MPI compiler if we select mpi features
+        if "+mpi" in self.spec:
+            env.set("CC", self.spec["mpi"].mpicc)

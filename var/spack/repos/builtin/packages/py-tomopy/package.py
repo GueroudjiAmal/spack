@@ -54,9 +54,8 @@ class PyTomopy(PythonPackage):
         args = ["--enable-arch"]
         if "avx512" in self.spec.target:
             args.append("--enable-avx512")
-
         # PTL is a git submodule, we only fetch it's source by git-submodule on master:
+        #args.append("-DWITH_CUDA=OFF -D_USE_CUDA=OFF  -DTOMOPY_USE_CUDA=OFF -DTOMOPY_USE_ARCH=OFF")
         if self.version != Version("master"):
             args.append("--disable-tasking")
-
         return args
